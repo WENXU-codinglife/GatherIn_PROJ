@@ -46,7 +46,10 @@ app.get("/api/v1/events", (req: Request, res: Response) => {
 });
 
 app.get("/api/v1/events/:id", (req: Request, res: Response) => {
-  const event = events.find((el) => el.id === +req.params.id);
+  const id: number = +req.params.id;
+  const event = events.find((el) => el.id === id);
+  if (!event)
+    return res.status(404).json({ status: "fail", message: "Invalid ID!" });
   res.status(200).json({
     status: "success",
     data: { event },
@@ -67,6 +70,19 @@ app.post("/api/v1/events", (req: Request, res: Response) => {
       });
     }
   );
+});
+
+app.patch("/api/v1/events/:id", (req: Request, res: Response) => {
+  const id: number = +req.params.id;
+  const event = events.find((el) => el.id === id);
+  if (!event)
+    return res.status(404).json({ status: "fail", message: "Invalid ID!" });
+  res.status(200).json({
+    status: "success",
+    data: {
+      event: "<updated event here...>",
+    },
+  });
 });
 
 const port: number = 3000;

@@ -23,6 +23,16 @@ app.get("/api/v1/events", (req, res) => {
         data: { events },
     });
 });
+app.get("/api/v1/events/:id", (req, res) => {
+    const id = +req.params.id;
+    const event = events.find((el) => el.id === id);
+    if (!event)
+        return res.status(404).json({ status: "fail", message: "Invalid ID!" });
+    res.status(200).json({
+        status: "success",
+        data: { event },
+    });
+});
 app.post("/api/v1/events", (req, res) => {
     const newId = events[events.length - 1].id + 1;
     const newEvent = Object.assign({ id: newId }, req.body);
@@ -32,6 +42,18 @@ app.post("/api/v1/events", (req, res) => {
             status: "success",
             data: { events: newEvent },
         });
+    });
+});
+app.patch("/api/v1/events/:id", (req, res) => {
+    const id = +req.params.id;
+    const event = events.find((el) => el.id === id);
+    if (!event)
+        return res.status(404).json({ status: "fail", message: "Invalid ID!" });
+    res.status(200).json({
+        status: "success",
+        data: {
+            event: "<updated event here...>",
+        },
     });
 });
 const port = 3000;
