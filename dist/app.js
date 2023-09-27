@@ -7,23 +7,15 @@ const express_1 = __importDefault(require("express"));
 const fs_1 = __importDefault(require("fs"));
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
-// app.get("/", (req: Request, res: Response) => {
-//   res
-//     .status(200)
-//     .send({ message: "Hello from the server side!", app: "GatherIn" });
-// });
-// app.post("/", (req: Request, res: Response) => {
-//   res.send("You can post to this endpoint!");
-// });
 const events = JSON.parse(fs_1.default.readFileSync(`${__dirname}/dev-data/data/events-simple.json`).toString());
-app.get("/api/v1/events", (req, res) => {
+const getAllEvent = (req, res, next) => {
     res.status(200).json({
         status: "success",
         results: events.length,
         data: { events },
     });
-});
-app.get("/api/v1/events/:id", (req, res) => {
+};
+const getEvent = (req, res, next) => {
     const id = +req.params.id;
     const event = events.find((el) => el.id === id);
     if (!event)
@@ -32,8 +24,8 @@ app.get("/api/v1/events/:id", (req, res) => {
         status: "success",
         data: { event },
     });
-});
-app.post("/api/v1/events", (req, res) => {
+};
+const createEvent = (req, res, next) => {
     const newId = events[events.length - 1].id + 1;
     const newEvent = Object.assign({ id: newId }, req.body);
     events.push(newEvent);
@@ -43,19 +35,44 @@ app.post("/api/v1/events", (req, res) => {
             data: { events: newEvent },
         });
     });
-});
-app.patch("/api/v1/events/:id", (req, res) => {
+};
+const updateEvent = (req, res, next) => {
+    const id = +req.params.id;
+    console.log(req.body);
+    const event = events.find((el) => el.id === id);
+    if (!event)
+        return res.status(404).json({ status: "fail", message: "Invalid ID!" });
+    Object.keys(req.body).forEach((key) => {
+        if (key in event) {
+            event[key] = req.body[key];
+        }
+    });
+    const otherEvents = events.filter((el) => el.id !== id);
+    const updatedEvents = otherEvents.concat([event]);
+    fs_1.default.writeFile(`${__dirname}/dev-data/data/events-simple.json`, JSON.stringify(updatedEvents), (err) => {
+        res.status(201).json({
+            status: "success",
+            data: { updatedEvent: event },
+        });
+    });
+};
+const deleteEvent = (req, res, next) => {
     const id = +req.params.id;
     const event = events.find((el) => el.id === id);
     if (!event)
         return res.status(404).json({ status: "fail", message: "Invalid ID!" });
-    res.status(200).json({
+    // add deleting logic later
+    res.status(204).json({
         status: "success",
-        data: {
-            event: "<updated event here...>",
-        },
+        data: null,
     });
-});
+};
+app.route("/api/v1/events").get(getAllEvent).post(createEvent);
+app
+    .route("/api/v1/events/:id")
+    .get(getEvent)
+    .patch(updateEvent)
+    .delete(deleteEvent);
 const port = 3000;
 app.listen(port, () => {
     console.log(`App running on port ${port}...`);

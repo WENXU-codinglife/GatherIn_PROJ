@@ -21,31 +21,21 @@ interface Event {
 }
 
 const app = express();
-
 app.use(express.json());
-
-// app.get("/", (req: Request, res: Response) => {
-//   res
-//     .status(200)
-//     .send({ message: "Hello from the server side!", app: "GatherIn" });
-// });
-
-// app.post("/", (req: Request, res: Response) => {
-//   res.send("You can post to this endpoint!");
-// });
 
 const events: Event[] = JSON.parse(
   fs.readFileSync(`${__dirname}/dev-data/data/events-simple.json`).toString()
 );
-app.get("/api/v1/events", (req: Request, res: Response) => {
+
+const getAllEvent: RequestHandler = (req, res, next) => {
   res.status(200).json({
     status: "success",
     results: events.length,
     data: { events },
   });
-});
+};
 
-app.get("/api/v1/events/:id", (req: Request, res: Response) => {
+const getEvent: RequestHandler = (req, res, next) => {
   const id: number = +req.params.id;
   const event = events.find((el) => el.id === id);
   if (!event)
@@ -54,9 +44,9 @@ app.get("/api/v1/events/:id", (req: Request, res: Response) => {
     status: "success",
     data: { event },
   });
-});
+};
 
-app.post("/api/v1/events", (req: Request, res: Response) => {
+const createEvent: RequestHandler = (req, res, next) => {
   const newId: number = events[events.length - 1].id! + 1;
   const newEvent: Event = Object.assign({ id: newId }, req.body);
   events.push(newEvent);
@@ -70,20 +60,51 @@ app.post("/api/v1/events", (req: Request, res: Response) => {
       });
     }
   );
-});
+};
 
-app.patch("/api/v1/events/:id", (req: Request, res: Response) => {
+const updateEvent: RequestHandler = (req, res, next) => {
+  const id: number = +req.params.id;
+  console.log(req.body);
+  const event = events.find((el) => el.id === id);
+  if (!event)
+    return res.status(404).json({ status: "fail", message: "Invalid ID!" });
+  Object.keys(req.body).forEach((key) => {
+    if (key in event) {
+      (event as any)[key] = req.body[key];
+    }
+  });
+  const otherEvents = events.filter((el) => el.id !== id);
+  const updatedEvents = otherEvents.concat([event]);
+  fs.writeFile(
+    `${__dirname}/dev-data/data/events-simple.json`,
+    JSON.stringify(updatedEvents),
+    (err) => {
+      res.status(201).json({
+        status: "success",
+        data: { updatedEvent: event },
+      });
+    }
+  );
+};
+
+const deleteEvent: RequestHandler = (req, res, next) => {
   const id: number = +req.params.id;
   const event = events.find((el) => el.id === id);
   if (!event)
     return res.status(404).json({ status: "fail", message: "Invalid ID!" });
-  res.status(200).json({
+  // add deleting logic later
+  res.status(204).json({
     status: "success",
-    data: {
-      event: "<updated event here...>",
-    },
+    data: null,
   });
-});
+};
+
+app.route("/api/v1/events").get(getAllEvent).post(createEvent);
+app
+  .route("/api/v1/events/:id")
+  .get(getEvent)
+  .patch(updateEvent)
+  .delete(deleteEvent);
 
 const port: number = 3000;
 app.listen(port, () => {
