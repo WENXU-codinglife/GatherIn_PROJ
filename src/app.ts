@@ -45,6 +45,14 @@ app.get("/api/v1/events", (req: Request, res: Response) => {
   });
 });
 
+app.get("/api/v1/events/:id", (req: Request, res: Response) => {
+  const event = events.find((el) => el.id === +req.params.id);
+  res.status(200).json({
+    status: "success",
+    data: { event },
+  });
+});
+
 app.post("/api/v1/events", (req: Request, res: Response) => {
   const newId: number = events[events.length - 1].id! + 1;
   const newEvent: Event = Object.assign({ id: newId }, req.body);
