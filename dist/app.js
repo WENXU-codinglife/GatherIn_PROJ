@@ -4,75 +4,21 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const fs_1 = __importDefault(require("fs"));
+const morgan_1 = __importDefault(require("morgan"));
+const eventRoutes_1 = __importDefault(require("./routes/eventRoutes"));
+const userRoutes_1 = __importDefault(require("./routes/userRoutes"));
 const app = (0, express_1.default)();
+// 1) middlewares
+app.use((0, morgan_1.default)("dev"));
 app.use(express_1.default.json());
-const events = JSON.parse(fs_1.default.readFileSync(`${__dirname}/dev-data/data/events-simple.json`).toString());
-const getAllEvent = (req, res, next) => {
-    res.status(200).json({
-        status: "success",
-        results: events.length,
-        data: { events },
-    });
-};
-const getEvent = (req, res, next) => {
-    const id = +req.params.id;
-    const event = events.find((el) => el.id === id);
-    if (!event)
-        return res.status(404).json({ status: "fail", message: "Invalid ID!" });
-    res.status(200).json({
-        status: "success",
-        data: { event },
-    });
-};
-const createEvent = (req, res, next) => {
-    const newId = events[events.length - 1].id + 1;
-    const newEvent = Object.assign({ id: newId }, req.body);
-    events.push(newEvent);
-    fs_1.default.writeFile(`${__dirname}/dev-data/data/events-simple.json`, JSON.stringify(events), (err) => {
-        res.status(201).json({
-            status: "success",
-            data: { events: newEvent },
-        });
-    });
-};
-const updateEvent = (req, res, next) => {
-    const id = +req.params.id;
-    console.log(req.body);
-    const event = events.find((el) => el.id === id);
-    if (!event)
-        return res.status(404).json({ status: "fail", message: "Invalid ID!" });
-    Object.keys(req.body).forEach((key) => {
-        if (key in event) {
-            event[key] = req.body[key];
-        }
-    });
-    const otherEvents = events.filter((el) => el.id !== id);
-    const updatedEvents = otherEvents.concat([event]);
-    fs_1.default.writeFile(`${__dirname}/dev-data/data/events-simple.json`, JSON.stringify(updatedEvents), (err) => {
-        res.status(201).json({
-            status: "success",
-            data: { updatedEvent: event },
-        });
-    });
-};
-const deleteEvent = (req, res, next) => {
-    const id = +req.params.id;
-    const event = events.find((el) => el.id === id);
-    if (!event)
-        return res.status(404).json({ status: "fail", message: "Invalid ID!" });
-    // add deleting logic later
-    res.status(204).json({
-        status: "success",
-        data: null,
-    });
-};
-app.route("/api/v1/events").get(getAllEvent).post(createEvent);
-app
-    .route("/api/v1/events/:id")
-    .get(getEvent)
-    .patch(updateEvent)
-    .delete(deleteEvent);
+app.use((req, res, next) => {
+    req.requestTime = new Date().toISOString();
+    next();
+});
+// 2) routes
+app.use("/api/v1/events", eventRoutes_1.default);
+app.use("/api/v1/users", userRoutes_1.default);
+// 3) start server
 const port = 3000;
 app.listen(port, () => {
     console.log(`App running on port ${port}...`);
