@@ -23,8 +23,4 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 app.use("/api/v1/events", eventRouter);
 app.use("/api/v1/users", userRouter);
 
-// 3) start server
-const port: number = 3000;
-app.listen(port, () => {
-  console.log(`App running on port ${port}...`);
-});
+export default app;

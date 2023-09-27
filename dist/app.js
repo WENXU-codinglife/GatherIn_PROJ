@@ -18,8 +18,4 @@ app.use((req, res, next) => {
 // 2) routes
 app.use("/api/v1/events", eventRoutes_1.default);
 app.use("/api/v1/users", userRoutes_1.default);
-// 3) start server
-const port = 3000;
-app.listen(port, () => {
-    console.log(`App running on port ${port}...`);
-});
+exports.default = app;
