@@ -8,12 +8,14 @@ import morgan from "morgan";
 
 import eventRouter from "./routes/eventRoutes";
 import userRouter from "./routes/userRoutes";
+import { currentMode } from "./utils/utils";
 
 const app = express();
 
 // 1) middlewares
-app.use(morgan("dev"));
+currentMode("dev") && app.use(morgan("dev"));
 app.use(express.json());
+app.use(express.static(`${__dirname}/../public`));
 app.use((req: Request, res: Response, next: NextFunction) => {
   (req as any).requestTime = new Date().toISOString();
   next();
