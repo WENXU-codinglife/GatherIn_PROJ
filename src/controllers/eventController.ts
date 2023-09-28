@@ -1,4 +1,9 @@
-import express, { RequestHandler } from "express";
+import express, {
+  Request,
+  Response,
+  NextFunction,
+  RequestHandler,
+} from "express";
 import fs from "fs";
 interface Event {
   id: number;
@@ -17,6 +22,28 @@ interface Event {
 const events: Event[] = JSON.parse(
   fs.readFileSync(`${__dirname}/../dev-data/data/events-simple.json`).toString()
 );
+
+export const checkID = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+  val: string
+) => {
+  const event = events.find((el) => el.id === +val);
+  if (!event)
+    return res.status(404).json({ status: "fail", message: "Invalid ID!" });
+  next();
+};
+export const checkBody: RequestHandler = (req, res, next) => {
+  const newEvent = req.body;
+  if (!("name" in newEvent && "charge" in newEvent))
+    return res.status(400).json({
+      status: "fail",
+      message: "Incorrect or missing info!",
+    });
+  next();
+};
+
 export const getAllEvent: RequestHandler = (req, res, next) => {
   res.status(200).json({
     status: "success",
@@ -54,17 +81,14 @@ export const createEvent: RequestHandler = (req, res, next) => {
 
 export const updateEvent: RequestHandler = (req, res, next) => {
   const id: number = +req.params.id;
-  console.log(req.body);
   const event = events.find((el) => el.id === id);
-  if (!event)
-    return res.status(404).json({ status: "fail", message: "Invalid ID!" });
   Object.keys(req.body).forEach((key) => {
-    if (key in event) {
+    if (key in event!) {
       (event as any)[key] = req.body[key];
     }
   });
   const otherEvents = events.filter((el) => el.id !== id);
-  const updatedEvents = otherEvents.concat([event]);
+  const updatedEvents = otherEvents.concat([event!]);
   fs.writeFile(
     `${__dirname}/dev-data/data/events-simple.json`,
     JSON.stringify(updatedEvents),
@@ -80,8 +104,6 @@ export const updateEvent: RequestHandler = (req, res, next) => {
 export const deleteEvent: RequestHandler = (req, res, next) => {
   const id: number = +req.params.id;
   const event = events.find((el) => el.id === id);
-  if (!event)
-    return res.status(404).json({ status: "fail", message: "Invalid ID!" });
   // add deleting logic later
   res.status(204).json({
     status: "success",
