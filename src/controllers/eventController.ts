@@ -21,27 +21,37 @@ interface Event {
   images: string[];
 }
 
-export const getAllEvent: RequestHandler = (req, res, next) => {
-  res.status(200).json({
-    status: "success",
-  });
+export const getAllEvent: RequestHandler = async (req, res, next) => {
+  try {
+    const events = await Event_Model.find();
+    return res.status(200).json({
+      status: "success",
+      data: { events },
+    });
+  } catch (err) {
+    return res.status(500).json({
+      status: "fail",
+      error: err,
+    });
+  }
 };
 
-export const getEvent: RequestHandler = (req, res, next) => {
-  return;
-  // const id: number = +req.params.id;
-  // const event = events.find((el) => el.id === id);
-  // if (!event)
-  //   return res.status(404).json({ status: "fail", message: "Invalid ID!" });
-  // res.status(200).json({
-  //   status: "success",
-  //   data: { event },
-  // });
+export const getEvent: RequestHandler = async (req, res, next) => {
+  try {
+    const event = await Event_Model.findById(req.params.id);
+    // Event.Model.findOne({_id: req.params.id}) works as well
+    return res.status(200).json({
+      status: "success",
+      data: { event },
+    });
+  } catch (err) {
+    return res.status(404).json({ status: "fail", error: err });
+  }
 };
 
 export const createEvent: RequestHandler = async (req, res, next) => {
   try {
-    const newEvent = await Event_Model.create(req.body);
+    const newEvent = await Event_Model.create(req.body as Event);
     return res.status(201).json({
       status: "success",
       data: { events: newEvent },
@@ -55,36 +65,34 @@ export const createEvent: RequestHandler = async (req, res, next) => {
   }
 };
 
-export const updateEvent: RequestHandler = (req, res, next) => {
-  return;
-  // const id: number = +req.params.id;
-  // const event = events.find((el) => el.id === id);
-  // Object.keys(req.body).forEach((key) => {
-  //   if (key in event!) {
-  //     (event as any)[key] = req.body[key];
-  //   }
-  // });
-  // const otherEvents = events.filter((el) => el.id !== id);
-  // const updatedEvents = otherEvents.concat([event!]);
-  // fs.writeFile(
-  //   `${__dirname}/dev-data/data/events-simple.json`,
-  //   JSON.stringify(updatedEvents),
-  //   (err) => {
-  //     res.status(201).json({
-  //       status: "success",
-  //       data: { updatedEvent: event },
-  //     });
-  //   }
-  // );
+export const updateEvent: RequestHandler = async (req, res, next) => {
+  try {
+    const event = await Event_Model.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    }); // new means the delared event contains the update data
+    return res.status(201).json({
+      status: "success",
+      data: { updatedEvent: event },
+    });
+  } catch (err) {
+    return res.status(404).json({
+      status: "fail",
+      error: err,
+    });
+  }
 };
-
-export const deleteEvent: RequestHandler = (req, res, next) => {
-  return;
-  // const id: number = +req.params.id;
-  // const event = events.find((el) => el.id === id);
-  // // add deleting logic later
-  // res.status(204).json({
-  //   status: "success",
-  //   data: null,
-  // });
+export const deleteEvent: RequestHandler = async (req, res, next) => {
+  try {
+    await Event_Model.findByIdAndDelete(req.params.id);
+    return res.status(204).json({
+      status: "success",
+      message: "Successful Deletion!",
+    });
+  } catch (err) {
+    return res.status(404).json({
+      status: "fail",
+      error: err,
+    });
+  }
 };
