@@ -7,7 +7,7 @@ const mongoose_1 = __importDefault(require("mongoose"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const utils_1 = require("./utils/utils");
 const app_1 = __importDefault(require("./app"));
-dotenv_1.default.config({ path: `${__dirname}/../config.env` });
+dotenv_1.default.config({ path: `${__dirname}/../conf.env` });
 const DATABASE_URI = (0, utils_1.currentMode)("dev")
     ? process.env.DATABASE_DEV
     : process.env.DATABASE;

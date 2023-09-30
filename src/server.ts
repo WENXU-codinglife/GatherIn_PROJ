@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import { currentMode } from "./utils/utils";
 import app from "./app";
 
-dotenv.config({ path: `${__dirname}/../config.env` });
+dotenv.config({ path: `${__dirname}/../conf.env` });
 
 const DATABASE_URI = currentMode("dev")
   ? process.env.DATABASE_DEV!

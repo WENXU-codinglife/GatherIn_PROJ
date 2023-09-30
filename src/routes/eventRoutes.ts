@@ -5,14 +5,10 @@ import {
   getEvent,
   updateEvent,
   deleteEvent,
-  checkID,
-  checkBody,
 } from "./../controllers/eventController";
 const router = express.Router();
 
-router.param("id", checkID);
-
-router.route("/").get(getAllEvent).post(checkBody, createEvent);
+router.route("/").get(getAllEvent).post(createEvent);
 router.route("/:id").get(getEvent).patch(updateEvent).delete(deleteEvent);
 
 export default router;
