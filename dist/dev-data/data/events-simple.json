@@ -1,1 +1,162 @@
-[{"id":1,"name":"Badminton Games","location":"123 1st Ave, Richmond, BC, Canada","startingTime":"20:00pm 28/09/2023","endingTime":"22:00pm 28/09/2023","size":40,"charge":12.99,"organizer":"Sean Wen","description":"A regular badminton game for all-level badminton enthusiasts.","imageCover":"https://imgurl.jpg","images":["https://imgurl1.jpg","https://imgurl2.jpg","https://imgurl3.jpg"]},{"id":3,"name":"Yoga Retreat","location":"789 Serene Valley, Sedona, AZ, USA","startingTime":"09:00am 15/11/2023","endingTime":"16:00pm 17/11/2023","size":30,"charge":99.99,"organizer":"Ella Smith","description":"A rejuvenating yoga retreat in the heart of nature.","imageCover":"https://imgurl-yoga.jpg","images":["https://imgurl-yoga1.jpg","https://imgurl-yoga2.jpg","https://imgurl-yoga3.jpg"]},{"id":4,"name":"Cooking Class","location":"567 Chef's Kitchen, Paris, France","startingTime":"18:00pm 10/09/2023","endingTime":"21:00pm 10/09/2023","size":20,"charge":29.99,"organizer":"Jean-Pierre Leclerc","description":"Learn the art of French cuisine in this hands-on cooking class.","imageCover":"https://imgurl-cooking.jpg","images":["https://imgurl-cooking1.jpg","https://imgurl-cooking2.jpg","https://imgurl-cooking3.jpg"]},{"id":5,"name":"Hiking Adventure","location":"321 Mountain Trail, Denver, CO, USA","startingTime":"08:00am 02/10/2023","endingTime":"16:00pm 02/10/2023","size":25,"charge":15,"organizer":"David Johnson","description":"Explore the beautiful trails of the Rocky Mountains on this hiking adventure.","imageCover":"https://imgurl-hiking.jpg","images":["https://imgurl-hiking1.jpg","https://imgurl-hiking2.jpg","https://imgurl-hiking3.jpg"]},{"id":6,"name":"Art Workshop","location":"101 Gallery Lane, New York, NY, USA","startingTime":"10:00am 20/09/2023","endingTime":"15:00pm 20/09/2023","size":15,"charge":25.99,"organizer":"Emily Turner","description":"Express your creativity in this hands-on art workshop.","imageCover":"https://imgurl-art.jpg","images":["https://imgurl-art1.jpg","https://imgurl-art2.jpg","https://imgurl-art3.jpg"]},{"id":7,"name":"Cycling Tour","location":"789 Greenway Road, Portland, OR, USA","startingTime":"09:30am 15/10/2023","endingTime":"14:00pm 15/10/2023","size":40,"charge":12.5,"organizer":"Michael Brown","description":"Pedal through scenic routes on this cycling tour.","imageCover":"https://imgurl-cycling.jpg","images":["https://imgurl-cycling1.jpg","https://imgurl-cycling2.jpg","https://imgurl-cycling3.jpg"]},{"id":8,"name":"Music Concert","location":"234 Harmony Hall, Chicago, IL, USA","startingTime":"19:00pm 08/11/2023","endingTime":"23:00pm 08/11/2023","size":100,"charge":45,"organizer":"Sarah Davis","description":"Enjoy a night of live music with talented local bands.","imageCover":"https://imgurl-concert.jpg","images":["https://imgurl-concert1.jpg","https://imgurl-concert2.jpg","https://imgurl-concert3.jpg"]},{"id":9,"name":"Basketball Tournament","location":"567 Park Court, Houston, TX, USA","startingTime":"10:00am 30/09/2023","endingTime":"17:00pm 01/10/2023","size":50,"charge":25.99,"organizer":"Chris Anderson","description":"Compete in a thrilling basketball tournament with prizes.","imageCover":"https://imgurl-basketball.jpg","images":["https://imgurl-basketball1.jpg","https://imgurl-basketball2.jpg","https://imgurl-basketball3.jpg"]},{"id":10,"name":"Gardening Workshop","location":"123 Green Thumb Lane, Seattle, WA, USA","startingTime":"11:00am 12/10/2023","endingTime":"13:00pm 12/10/2023","size":30,"charge":10,"organizer":"Linda Garcia","description":"Learn the secrets of creating a beautiful garden in this workshop.","imageCover":"https://imgurl-gardening.jpg","images":["https://imgurl-gardening1.jpg","https://imgurl-gardening2.jpg","https://imgurl-gardening3.jpg"]},{"id":2,"name":"Soccer Tournament","location":"456 Oak Street, Los Angeles, CA, USA","startingTime":"14:30pm 05/10/2023","endingTime":"18:00pm 05/10/2023","size":60,"charge":20.99,"organizer":"Jane Doe","description":"A friendly soccer tournament for all skill levels.","imageCover":"https://imgurl-soccer.jpg","images":["https://imgurl-soccer1.jpg","https://imgurl-soccer2.jpg","https://imgurl-soccer3.jpg"]},{"id":3,"name":"Test Event","organizer":"Joe Doe"},{"id":4,"name":"Test Event","organizer":"Joe Doe"}]
+[
+  {
+    "name": "Badminton Games",
+    "location": "123 1st Ave, Richmond, BC, Canada",
+    "startingTime": "2023-09-28T20:00:00",
+    "endingTime": "2023-09-28T22:00:00",
+    "size": 40,
+    "charge": 12.99,
+    "organizer": "Sean Wen",
+    "description": "A regular badminton game for all-level badminton enthusiasts.",
+    "imageCover": "https://imgurl.jpg",
+    "images": [
+      "https://imgurl1.jpg",
+      "https://imgurl2.jpg",
+      "https://imgurl3.jpg"
+    ]
+  },
+  {
+    "name": "Soccer Tournament",
+    "location": "456 Oak Street, Los Angeles, CA, USA",
+    "startingTime": "2023-10-05T14:30:00",
+    "endingTime": "2023-10-05T18:00:00",
+    "size": 60,
+    "charge": 20.99,
+    "organizer": "Maria Rodriguez",
+    "description": "A friendly soccer tournament for all skill levels.",
+    "imageCover": "https://imgurl-soccer.jpg",
+    "images": [
+      "https://imgurl-soccer1.jpg",
+      "https://imgurl-soccer2.jpg",
+      "https://imgurl-soccer3.jpg"
+    ]
+  },
+  {
+    "name": "Yoga Retreat",
+    "location": "789 Serene Valley, Sedona, AZ, USA",
+    "startingTime": "2023-11-15T09:00:00",
+    "endingTime": "2023-11-17T16:00:00",
+    "size": 30,
+    "charge": 99.99,
+    "organizer": "Ella Smith",
+    "description": "A rejuvenating yoga retreat in the heart of nature.",
+    "imageCover": "https://imgurl-yoga.jpg",
+    "images": [
+      "https://imgurl-yoga1.jpg",
+      "https://imgurl-yoga2.jpg",
+      "https://imgurl-yoga3.jpg"
+    ]
+  },
+  {
+    "name": "Cooking Class",
+    "location": "567 Chef's Kitchen, Paris, France",
+    "startingTime": "2023-09-10T18:00:00",
+    "endingTime": "2023-09-10T21:00:00",
+    "size": 20,
+    "charge": 29.99,
+    "organizer": "Jean-Pierre Leclerc",
+    "description": "Learn the art of French cuisine in this hands-on cooking class.",
+    "imageCover": "https://imgurl-cooking.jpg",
+    "images": [
+      "https://imgurl-cooking1.jpg",
+      "https://imgurl-cooking2.jpg",
+      "https://imgurl-cooking3.jpg"
+    ]
+  },
+  {
+    "name": "Hiking Adventure",
+    "location": "321 Mountain Trail, Denver, CO, USA",
+    "startingTime": "2023-10-02T08:00:00",
+    "endingTime": "2023-10-02T16:00:00",
+    "size": 25,
+    "charge": 15.0,
+    "organizer": "David Johnson",
+    "description": "Explore the beautiful trails of the Rocky Mountains on this hiking adventure.",
+    "imageCover": "https://imgurl-hiking.jpg",
+    "images": [
+      "https://imgurl-hiking1.jpg",
+      "https://imgurl-hiking2.jpg",
+      "https://imgurl-hiking3.jpg"
+    ]
+  },
+  {
+    "name": "Art Workshop",
+    "location": "101 Gallery Lane, New York, NY, USA",
+    "startingTime": "2023-09-20T10:00:00",
+    "endingTime": "2023-09-20T15:00:00",
+    "size": 15,
+    "charge": 25.99,
+    "organizer": "Emily Turner",
+    "description": "Express your creativity in this hands-on art workshop.",
+    "imageCover": "https://imgurl-art.jpg",
+    "images": [
+      "https://imgurl-art1.jpg",
+      "https://imgurl-art2.jpg",
+      "https://imgurl-art3.jpg"
+    ]
+  },
+  {
+    "name": "Cycling Tour",
+    "location": "789 Greenway Road, Portland, OR, USA",
+    "startingTime": "2023-10-15T09:30:00",
+    "endingTime": "2023-10-15T14:00:00",
+    "size": 40,
+    "charge": 12.5,
+    "organizer": "Michael Brown",
+    "description": "Pedal through scenic routes on this cycling tour.",
+    "imageCover": "https://imgurl-cycling.jpg",
+    "images": [
+      "https://imgurl-cycling1.jpg",
+      "https://imgurl-cycling2.jpg",
+      "https://imgurl-cycling3.jpg"
+    ]
+  },
+  {
+    "name": "Music Concert",
+    "location": "234 Harmony Hall, Chicago, IL, USA",
+    "startingTime": "2023-11-08T19:00:00",
+    "endingTime": "2023-11-08T23:00:00",
+    "size": 100,
+    "charge": 45.0,
+    "organizer": "Sarah Davis",
+    "description": "Enjoy a night of live music with talented local bands.",
+    "imageCover": "https://imgurl-concert.jpg",
+    "images": [
+      "https://imgurl-concert1.jpg",
+      "https://imgurl-concert2.jpg",
+      "https://imgurl-concert3.jpg"
+    ]
+  },
+  {
+    "name": "Basketball Tournament",
+    "location": "567 Park Court, Houston, TX, USA",
+    "startingTime": "2023-09-30T10:00:00",
+    "endingTime": "2023-10-01T17:00:00",
+    "size": 50,
+    "charge": 25.99,
+    "organizer": "Chris Anderson",
+    "description": "Compete in a thrilling basketball tournament with prizes.",
+    "imageCover": "https://imgurl-basketball.jpg",
+    "images": [
+      "https://imgurl-basketball1.jpg",
+      "https://imgurl-basketball2.jpg",
+      "https://imgurl-basketball3.jpg"
+    ]
+  },
+  {
+    "name": "Gardening Workshop",
+    "location": "123 Green Thumb Lane, Seattle, WA, USA",
+    "startingTime": "2023-10-12T11:00:00",
+    "endingTime": "2023-10-12T13:00:00",
+    "size": 30,
+    "charge": 10.0,
+    "organizer": "Linda Garcia",
+    "description": "Learn the secrets of creating a beautiful garden in this workshop.",
+    "imageCover": "https://imgurl-gardening.jpg",
+    "images": [
+      "https://imgurl-gardening1.jpg",
+      "https://imgurl-gardening2.jpg",
+      "https://imgurl-gardening3.jpg"
+    ]
+  }
+]

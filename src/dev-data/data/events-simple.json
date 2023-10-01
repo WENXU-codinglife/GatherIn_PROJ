@@ -1,10 +1,9 @@
 [
   {
-    "id": 1,
     "name": "Badminton Games",
     "location": "123 1st Ave, Richmond, BC, Canada",
-    "startingTime": "20:00pm 28/09/2023",
-    "endingTime": "22:00pm 28/09/2023",
+    "startingTime": "2023-09-28T20:00:00",
+    "endingTime": "2023-09-28T22:00:00",
     "size": 40,
     "charge": 12.99,
     "organizer": "Sean Wen",
@@ -17,11 +16,10 @@
     ]
   },
   {
-    "id": 2,
     "name": "Soccer Tournament",
     "location": "456 Oak Street, Los Angeles, CA, USA",
-    "startingTime": "14:30pm 05/10/2023",
-    "endingTime": "18:00pm 05/10/2023",
+    "startingTime": "2023-10-05T14:30:00",
+    "endingTime": "2023-10-05T18:00:00",
     "size": 60,
     "charge": 20.99,
     "organizer": "Maria Rodriguez",
@@ -34,11 +32,10 @@
     ]
   },
   {
-    "id": 3,
     "name": "Yoga Retreat",
     "location": "789 Serene Valley, Sedona, AZ, USA",
-    "startingTime": "09:00am 15/11/2023",
-    "endingTime": "16:00pm 17/11/2023",
+    "startingTime": "2023-11-15T09:00:00",
+    "endingTime": "2023-11-17T16:00:00",
     "size": 30,
     "charge": 99.99,
     "organizer": "Ella Smith",
@@ -51,11 +48,10 @@
     ]
   },
   {
-    "id": 4,
     "name": "Cooking Class",
     "location": "567 Chef's Kitchen, Paris, France",
-    "startingTime": "18:00pm 10/09/2023",
-    "endingTime": "21:00pm 10/09/2023",
+    "startingTime": "2023-09-10T18:00:00",
+    "endingTime": "2023-09-10T21:00:00",
     "size": 20,
     "charge": 29.99,
     "organizer": "Jean-Pierre Leclerc",
@@ -68,11 +64,10 @@
     ]
   },
   {
-    "id": 5,
     "name": "Hiking Adventure",
     "location": "321 Mountain Trail, Denver, CO, USA",
-    "startingTime": "08:00am 02/10/2023",
-    "endingTime": "16:00pm 02/10/2023",
+    "startingTime": "2023-10-02T08:00:00",
+    "endingTime": "2023-10-02T16:00:00",
     "size": 25,
     "charge": 15.0,
     "organizer": "David Johnson",
@@ -85,11 +80,10 @@
     ]
   },
   {
-    "id": 6,
     "name": "Art Workshop",
     "location": "101 Gallery Lane, New York, NY, USA",
-    "startingTime": "10:00am 20/09/2023",
-    "endingTime": "15:00pm 20/09/2023",
+    "startingTime": "2023-09-20T10:00:00",
+    "endingTime": "2023-09-20T15:00:00",
     "size": 15,
     "charge": 25.99,
     "organizer": "Emily Turner",
@@ -102,11 +96,10 @@
     ]
   },
   {
-    "id": 7,
     "name": "Cycling Tour",
     "location": "789 Greenway Road, Portland, OR, USA",
-    "startingTime": "09:30am 15/10/2023",
-    "endingTime": "14:00pm 15/10/2023",
+    "startingTime": "2023-10-15T09:30:00",
+    "endingTime": "2023-10-15T14:00:00",
     "size": 40,
     "charge": 12.5,
     "organizer": "Michael Brown",
@@ -119,11 +112,10 @@
     ]
   },
   {
-    "id": 8,
     "name": "Music Concert",
     "location": "234 Harmony Hall, Chicago, IL, USA",
-    "startingTime": "19:00pm 08/11/2023",
-    "endingTime": "23:00pm 08/11/2023",
+    "startingTime": "2023-11-08T19:00:00",
+    "endingTime": "2023-11-08T23:00:00",
     "size": 100,
     "charge": 45.0,
     "organizer": "Sarah Davis",
@@ -136,11 +128,10 @@
     ]
   },
   {
-    "id": 9,
     "name": "Basketball Tournament",
     "location": "567 Park Court, Houston, TX, USA",
-    "startingTime": "10:00am 30/09/2023",
-    "endingTime": "17:00pm 01/10/2023",
+    "startingTime": "2023-09-30T10:00:00",
+    "endingTime": "2023-10-01T17:00:00",
     "size": 50,
     "charge": 25.99,
     "organizer": "Chris Anderson",
@@ -153,11 +144,10 @@
     ]
   },
   {
-    "id": 10,
     "name": "Gardening Workshop",
     "location": "123 Green Thumb Lane, Seattle, WA, USA",
-    "startingTime": "11:00am 12/10/2023",
-    "endingTime": "13:00pm 12/10/2023",
+    "startingTime": "2023-10-12T11:00:00",
+    "endingTime": "2023-10-12T13:00:00",
     "size": 30,
     "charge": 10.0,
     "organizer": "Linda Garcia",
