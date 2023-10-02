@@ -54,9 +54,9 @@ export const getAllEvent: RequestHandler = async (req, res, next) => {
           return accumulator;
         }, {});
       console.log(sortBy);
-      events_query = events_query.sort(sortBy);
+      events_query.sort(sortBy);
     } else {
-      events_query = events_query.sort("createAt");
+      events_query.sort("createAt");
     }
     // Limiting
     if (req.query.fields) {
@@ -66,6 +66,15 @@ export const getAllEvent: RequestHandler = async (req, res, next) => {
       events_query.select(fields);
     } else {
       events_query.select("-__v");
+    }
+    // Pagination
+    const page = req.query.page ? +req.query.page : 1;
+    const limit = req.query.limit ? +req.query.limit : 100;
+    const skip = (page - 1) * limit;
+    events_query.skip(skip).limit(limit);
+    if (req.query.page) {
+      const numberEvents = await Event_Model.countDocuments();
+      if (skip >= numberEvents) throw new Error("This page does not exist!");
     }
 
     const events = await events_query;
