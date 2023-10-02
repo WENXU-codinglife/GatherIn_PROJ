@@ -5,64 +5,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteEvent = exports.updateEvent = exports.createEvent = exports.getEvent = exports.getAllEvent = void 0;
 const eventModel_1 = __importDefault(require("./../models/eventModel"));
+const apiFeatures_1 = __importDefault(require("../utils/apiFeatures"));
 const getAllEvent = async (req, res, next) => {
     try {
-        const queryObj = { ...req.query };
-        console.log(queryObj);
-        const excludedFields = ["page", "sort", "limit", "fields"];
-        if (queryObj) {
-            excludedFields.forEach((el) => {
-                delete queryObj[el];
-            });
-        }
-        // Filtering
-        let queryStr = JSON.stringify(queryObj);
-        queryStr = queryStr.replace(/(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
-        let events_query = eventModel_1.default.find(JSON.parse(queryStr));
-        // Sorting
-        if (req.query.sort) {
-            const query_sort = req.query.sort;
-            const sortBy = query_sort
-                .split(",")
-                .reduce((accumulator, currentValue) => {
-                if (currentValue[0] !== "-") {
-                    accumulator = Object.assign(accumulator, { [currentValue]: 1 });
-                }
-                else {
-                    accumulator = Object.assign(accumulator, {
-                        [currentValue.slice(1)]: -1,
-                    });
-                }
-                console.log(accumulator);
-                return accumulator;
-            }, {});
-            console.log(sortBy);
-            events_query.sort(sortBy);
-        }
-        else {
-            events_query.sort("createAt");
-        }
-        // Limiting
-        if (req.query.fields) {
-            const query_fields = req.query.fields;
-            const fields = query_fields.split(",").join(" ");
-            console.log(query_fields, fields);
-            events_query.select(fields);
-        }
-        else {
-            events_query.select("-__v");
-        }
-        // Pagination
-        const page = req.query.page ? +req.query.page : 1;
-        const limit = req.query.limit ? +req.query.limit : 100;
-        const skip = (page - 1) * limit;
-        events_query.skip(skip).limit(limit);
-        if (req.query.page) {
-            const numberEvents = await eventModel_1.default.countDocuments();
-            if (skip >= numberEvents)
-                throw new Error("This page does not exist!");
-        }
-        const events = await events_query;
+        const features = new apiFeatures_1.default(eventModel_1.default.find(), req.query)
+            .filter()
+            .sort()
+            .limit()
+            .paginate();
+        const events = await features.query;
         return res.status(200).json({
             status: "success",
             results: events.length,

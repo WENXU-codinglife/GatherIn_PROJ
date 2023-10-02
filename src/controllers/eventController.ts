@@ -1,83 +1,15 @@
-import express, {
-  Request,
-  Response,
-  NextFunction,
-  RequestHandler,
-  query,
-} from "express";
-import fs from "fs";
+import { RequestHandler } from "express";
 import Event_Model from "./../models/eventModel";
-
-interface Event {
-  id: number;
-  name: string;
-  location: string;
-  startingTime: string;
-  endingTime: string;
-  size: number;
-  charge: number;
-  organizer: string;
-  description: string;
-  imageCover: string;
-  images: string[];
-}
+import APIFeatures from "../utils/apiFeatures";
 
 export const getAllEvent: RequestHandler = async (req, res, next) => {
   try {
-    const queryObj = { ...req.query };
-    console.log(queryObj);
-    const excludedFields = ["page", "sort", "limit", "fields"];
-    if (queryObj) {
-      excludedFields.forEach((el) => {
-        delete queryObj[el];
-      });
-    }
-    // Filtering
-    let queryStr = JSON.stringify(queryObj);
-    queryStr = queryStr.replace(/(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
-    let events_query = Event_Model.find(JSON.parse(queryStr));
-
-    // Sorting
-    if (req.query.sort) {
-      const query_sort = req.query.sort as string;
-      const sortBy = query_sort
-        .split(",")
-        .reduce((accumulator, currentValue) => {
-          if (currentValue[0] !== "-") {
-            accumulator = Object.assign(accumulator, { [currentValue]: 1 });
-          } else {
-            accumulator = Object.assign(accumulator, {
-              [currentValue.slice(1)]: -1,
-            });
-          }
-          console.log(accumulator);
-          return accumulator;
-        }, {});
-      console.log(sortBy);
-      events_query.sort(sortBy);
-    } else {
-      events_query.sort("createAt");
-    }
-    // Limiting
-    if (req.query.fields) {
-      const query_fields = req.query.fields as string;
-      const fields = query_fields.split(",").join(" ");
-      console.log(query_fields, fields);
-      events_query.select(fields);
-    } else {
-      events_query.select("-__v");
-    }
-    // Pagination
-    const page = req.query.page ? +req.query.page : 1;
-    const limit = req.query.limit ? +req.query.limit : 100;
-    const skip = (page - 1) * limit;
-    events_query.skip(skip).limit(limit);
-    if (req.query.page) {
-      const numberEvents = await Event_Model.countDocuments();
-      if (skip >= numberEvents) throw new Error("This page does not exist!");
-    }
-
-    const events = await events_query;
+    const features = new APIFeatures(Event_Model.find(), req.query)
+      .filter()
+      .sort()
+      .limit()
+      .paginate();
+    const events = await features.query;
     return res.status(200).json({
       status: "success",
       results: events.length,

@@ -15,7 +15,7 @@ const eventSchema = new mongoose.Schema({
     type: Date,
     default: Date.now(),
   },
-  size: Number,
+  size: { type: Number, default: 0 },
   charge: Number,
   maxGroupSize: {
     type: Number,
