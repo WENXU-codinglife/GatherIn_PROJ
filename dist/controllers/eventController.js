@@ -7,9 +7,55 @@ exports.deleteEvent = exports.updateEvent = exports.createEvent = exports.getEve
 const eventModel_1 = __importDefault(require("./../models/eventModel"));
 const getAllEvent = async (req, res, next) => {
     try {
-        const events = await eventModel_1.default.find();
+        const queryObj = { ...req.query };
+        console.log(queryObj);
+        const excludedFields = ["page", "sort", "limit", "fields"];
+        if (queryObj) {
+            excludedFields.forEach((el) => {
+                delete queryObj[el];
+            });
+        }
+        // Filtering
+        let queryStr = JSON.stringify(queryObj);
+        queryStr = queryStr.replace(/(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
+        let events_query = eventModel_1.default.find(JSON.parse(queryStr));
+        // Sorting
+        if (req.query.sort) {
+            const query_sort = req.query.sort;
+            const sortBy = query_sort
+                .split(",")
+                .reduce((accumulator, currentValue) => {
+                if (currentValue[0] !== "-") {
+                    accumulator = Object.assign(accumulator, { [currentValue]: 1 });
+                }
+                else {
+                    accumulator = Object.assign(accumulator, {
+                        [currentValue.slice(1)]: -1,
+                    });
+                }
+                console.log(accumulator);
+                return accumulator;
+            }, {});
+            console.log(sortBy);
+            events_query = events_query.sort(sortBy);
+        }
+        else {
+            events_query = events_query.sort("createAt");
+        }
+        // Limiting
+        if (req.query.fields) {
+            const query_fields = req.query.fields;
+            const fields = query_fields.split(",").join(" ");
+            console.log(query_fields, fields);
+            events_query.select(fields);
+        }
+        else {
+            events_query.select("-__v");
+        }
+        const events = await events_query;
         return res.status(200).json({
             status: "success",
+            results: events.length,
             data: { events },
         });
     }

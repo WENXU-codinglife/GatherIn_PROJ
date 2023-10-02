@@ -3,6 +3,7 @@ import express, {
   Response,
   NextFunction,
   RequestHandler,
+  query,
 } from "express";
 import fs from "fs";
 import Event_Model from "./../models/eventModel";
@@ -23,9 +24,54 @@ interface Event {
 
 export const getAllEvent: RequestHandler = async (req, res, next) => {
   try {
-    const events = await Event_Model.find();
+    const queryObj = { ...req.query };
+    console.log(queryObj);
+    const excludedFields = ["page", "sort", "limit", "fields"];
+    if (queryObj) {
+      excludedFields.forEach((el) => {
+        delete queryObj[el];
+      });
+    }
+    // Filtering
+    let queryStr = JSON.stringify(queryObj);
+    queryStr = queryStr.replace(/(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
+    let events_query = Event_Model.find(JSON.parse(queryStr));
+
+    // Sorting
+    if (req.query.sort) {
+      const query_sort = req.query.sort as string;
+      const sortBy = query_sort
+        .split(",")
+        .reduce((accumulator, currentValue) => {
+          if (currentValue[0] !== "-") {
+            accumulator = Object.assign(accumulator, { [currentValue]: 1 });
+          } else {
+            accumulator = Object.assign(accumulator, {
+              [currentValue.slice(1)]: -1,
+            });
+          }
+          console.log(accumulator);
+          return accumulator;
+        }, {});
+      console.log(sortBy);
+      events_query = events_query.sort(sortBy);
+    } else {
+      events_query = events_query.sort("createAt");
+    }
+    // Limiting
+    if (req.query.fields) {
+      const query_fields = req.query.fields as string;
+      const fields = query_fields.split(",").join(" ");
+      console.log(query_fields, fields);
+      events_query.select(fields);
+    } else {
+      events_query.select("-__v");
+    }
+
+    const events = await events_query;
     return res.status(200).json({
       status: "success",
+      results: events.length,
       data: { events },
     });
   } catch (err) {
