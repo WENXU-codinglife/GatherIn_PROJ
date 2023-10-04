@@ -41,6 +41,13 @@ const eventSchema = new mongoose_1.default.Schema({
     images: {
         type: Array(String),
     },
+}, {
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
 });
+eventSchema.virtual("availablePositions").get(function () {
+    return this.maxGroupSize - this.size;
+});
+// DOCUMENT MIDDLEWARE: runs only before .save() and .create()
 const Event_Model = mongoose_1.default.model("Events", eventSchema);
 exports.default = Event_Model;
