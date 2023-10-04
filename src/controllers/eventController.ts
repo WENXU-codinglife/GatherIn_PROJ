@@ -1,4 +1,4 @@
-import { RequestHandler } from "express";
+import { Request, Response, RequestHandler } from "express";
 import Event_Model from "./../models/eventModel";
 import APIFeatures from "../utils/apiFeatures";
 
@@ -75,6 +75,32 @@ export const deleteEvent: RequestHandler = async (req, res, next) => {
     return res.status(204).json({
       status: "success",
       message: "Successful Deletion!",
+    });
+  } catch (err) {
+    return res.status(404).json({
+      status: "fail",
+      error: err,
+    });
+  }
+};
+
+export const getEventStats = async (req: Request, res: Response) => {
+  try {
+    const stats = await Event_Model.aggregate([
+      { $match: { charge: { $gte: 20 } } },
+      {
+        $group: {
+          _id: null,
+          num: { $sum: 1 },
+          avgCharge: { $avg: "$charge" },
+          minSize: { $min: "$size" },
+          maxSize: { $max: "$size" },
+        },
+      },
+    ]);
+    return res.status(200).json({
+      status: "success",
+      data: { stats },
     });
   } catch (err) {
     return res.status(404).json({

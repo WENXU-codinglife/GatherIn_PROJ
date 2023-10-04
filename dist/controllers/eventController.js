@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteEvent = exports.updateEvent = exports.createEvent = exports.getEvent = exports.getAllEvent = void 0;
+exports.getEventStats = exports.deleteEvent = exports.updateEvent = exports.createEvent = exports.getEvent = exports.getAllEvent = void 0;
 const eventModel_1 = __importDefault(require("./../models/eventModel"));
 const apiFeatures_1 = __importDefault(require("../utils/apiFeatures"));
 const getAllEvent = async (req, res, next) => {
@@ -94,3 +94,30 @@ const deleteEvent = async (req, res, next) => {
     }
 };
 exports.deleteEvent = deleteEvent;
+const getEventStats = async (req, res) => {
+    try {
+        const stats = await eventModel_1.default.aggregate([
+            { $match: { charge: { $gte: 20 } } },
+            {
+                $group: {
+                    _id: null,
+                    num: { $sum: 1 },
+                    avgCharge: { $avg: "$charge" },
+                    minSize: { $min: "$size" },
+                    maxSize: { $max: "$size" },
+                },
+            },
+        ]);
+        return res.status(200).json({
+            status: "success",
+            data: { stats },
+        });
+    }
+    catch (err) {
+        return res.status(404).json({
+            status: "fail",
+            error: err,
+        });
+    }
+};
+exports.getEventStats = getEventStats;
