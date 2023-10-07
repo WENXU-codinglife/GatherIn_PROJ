@@ -25,4 +25,38 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 app.use("/api/v1/events", eventRouter);
 app.use("/api/v1/users", userRouter);
 
+class CustomizedError extends Error {
+  constructor(
+    message: string,
+    public statusCode: number,
+    public status: string
+  ) {
+    super(message);
+    this.name = "Error";
+  }
+}
+app.all("*", (req: Request, res: Response, next: NextFunction) => {
+  const err = new CustomizedError(
+    `Can't find ${req.originalUrl}.`,
+    404,
+    "fail"
+  );
+
+  console.log(err);
+  next(err); // once passing an argument to next(), Express will treat it as an error.
+});
+
+// Error-handling middleware
+app.use(
+  (err: CustomizedError, req: Request, res: Response, next: NextFunction) => {
+    err.statusCode = err.statusCode || 500;
+    err.name;
+    err.status = err.status || "error";
+    res.status(err.statusCode).json({
+      status: err.status,
+      message: err.message,
+    });
+  }
+);
+
 export default app;
