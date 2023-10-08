@@ -35,7 +35,6 @@ app.all("*", (req: Request, res: Response, next: NextFunction) => {
   const err = new Error(`Can't find ${req.originalUrl}.`);
   (err as any).status = "fail";
   (err as any).statusCode = 404;
-  console.log(err);
   next(err); // once passing an argument to next(), Express will treat it as an error.
 });
 
