@@ -7,9 +7,11 @@ import express, {
 } from "express";
 import morgan from "morgan";
 
+import AppError from "./utils/appError";
 import eventRouter from "./routes/eventRoutes";
 import userRouter from "./routes/userRoutes";
 import { currentMode } from "./utils/utils";
+import errorHandler from "./controllers/errorController";
 
 const app = express();
 
@@ -26,27 +28,11 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 app.use("/api/v1/events", eventRouter);
 app.use("/api/v1/users", userRouter);
 
-interface IError extends Error {
-  status: string;
-  statusCode: number;
-}
-
 app.all("*", (req: Request, res: Response, next: NextFunction) => {
-  const err = new Error(`Can't find ${req.originalUrl}.`);
-  (err as any).status = "fail";
-  (err as any).statusCode = 404;
-  next(err); // once passing an argument to next(), Express will treat it as an error.
+  next(new AppError(`Can't find ${req.originalUrl}.`, 404)); // once passing an argument to next(), Express will treat it as an error.
 });
 
 // Error-handling middleware
-app.use((err: IError, req: Request, res: Response, next: NextFunction) => {
-  err.statusCode = err.statusCode || 500;
-  err.name;
-  err.status = err.status || "error";
-  res.status(err.statusCode).json({
-    status: err.status,
-    message: err.message,
-  });
-});
+app.use(errorHandler);
 
 export default app;
