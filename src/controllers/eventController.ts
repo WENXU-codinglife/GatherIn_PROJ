@@ -1,9 +1,10 @@
-import { Request, Response, RequestHandler } from "express";
+import { Request, Response, RequestHandler, NextFunction } from "express";
 import Event_Model from "./../models/eventModel";
 import APIFeatures from "../utils/apiFeatures";
+import catchAsync from "../utils/catchAsync";
 
-export const getAllEvent: RequestHandler = async (req, res, next) => {
-  try {
+export const getAllEvent = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
     const features = new APIFeatures(Event_Model.find(), req.query)
       .filter()
       .sort()
@@ -15,77 +16,46 @@ export const getAllEvent: RequestHandler = async (req, res, next) => {
       results: events.length,
       data: { events },
     });
-  } catch (err) {
-    return res.status(500).json({
-      status: "fail",
-      error: err,
-    });
   }
-};
+);
 
-export const getEvent: RequestHandler = async (req, res, next) => {
-  try {
-    const event = await Event_Model.findById(req.params.id);
-    // Event.Model.findOne({_id: req.params.id}) works as well
-    return res.status(200).json({
-      status: "success",
-      data: { event },
-    });
-  } catch (err) {
-    return res.status(404).json({ status: "fail", error: err });
-  }
-};
+export const getEvent = catchAsync(async (req, res, next) => {
+  const event = await Event_Model.findById(req.params.id);
+  // Event.Model.findOne({_id: req.params.id}) works as well
+  return res.status(200).json({
+    status: "success",
+    data: { event },
+  });
+});
 
-export const createEvent: RequestHandler = async (req, res, next) => {
-  try {
-    const newEvent = await Event_Model.create(req.body as Event);
-    return res.status(201).json({
-      status: "success",
-      data: { events: newEvent },
-    });
-  } catch (err) {
-    return res.status(400).json({
-      status: "fail",
-      message: "Error: Invalid Data!",
-      error: err,
-    });
-  }
-};
+export const createEvent = catchAsync(async (req, res, next) => {
+  const newEvent = await Event_Model.create(req.body as Event);
+  return res.status(201).json({
+    status: "success",
+    data: { events: newEvent },
+  });
+});
 
-export const updateEvent: RequestHandler = async (req, res, next) => {
-  try {
-    const event = await Event_Model.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
-    }); // new means the delared event contains the update data
-    return res.status(201).json({
-      status: "success",
-      data: { updatedEvent: event },
-    });
-  } catch (err) {
-    return res.status(404).json({
-      status: "fail",
-      error: err,
-    });
-  }
-};
-export const deleteEvent: RequestHandler = async (req, res, next) => {
-  try {
-    await Event_Model.findByIdAndDelete(req.params.id);
-    return res.status(204).json({
-      status: "success",
-      message: "Successful Deletion!",
-    });
-  } catch (err) {
-    return res.status(404).json({
-      status: "fail",
-      error: err,
-    });
-  }
-};
+export const updateEvent = catchAsync(async (req, res, next) => {
+  const event = await Event_Model.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+    runValidators: true,
+  }); // new means the delared event contains the update data
+  return res.status(201).json({
+    status: "success",
+    data: { updatedEvent: event },
+  });
+});
+export const deleteEvent = catchAsync(async (req, res, next) => {
+  await Event_Model.findByIdAndDelete(req.params.id);
+  return res.status(204).json({
+    status: "success",
+    message: "Successful Deletion!",
+  });
+});
 
-export const getEventStats = async (req: Request, res: Response) => {
-  try {
+export const getEventStats = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
     const stats = await Event_Model.aggregate([
       { $match: { charge: { $gte: 20 } } },
       {
@@ -102,10 +72,5 @@ export const getEventStats = async (req: Request, res: Response) => {
       status: "success",
       data: { stats },
     });
-  } catch (err) {
-    return res.status(404).json({
-      status: "fail",
-      error: err,
-    });
   }
-};
+);
