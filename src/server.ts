@@ -3,6 +3,10 @@ import dotenv from "dotenv";
 import { currentMode } from "./utils/utils";
 import app from "./app";
 
+process.on("uncaughtException", (err) => {
+  console.log("Uncaught Exception! Shutting down...\n", err.name, err.message);
+  process.exit(1);
+});
 dotenv.config({ path: `${__dirname}/../conf.env` });
 
 const DATABASE_URI = currentMode("dev")
@@ -20,7 +24,7 @@ const server = app.listen(port, () => {
 });
 
 process.on("unhandledRejection", (err) => {
-  console.log(err);
+  console.log("Unhandled Rejection! Shutting down...\n", err);
   server.close(() => {
     process.exit(1); // (second) in this way, the process will be terminated gracefully after other requests handled
   });

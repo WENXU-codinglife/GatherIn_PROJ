@@ -7,6 +7,10 @@ const mongoose_1 = __importDefault(require("mongoose"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const utils_1 = require("./utils/utils");
 const app_1 = __importDefault(require("./app"));
+process.on("uncaughtException", (err) => {
+    console.log("Uncaught Exception! Shutting down...\n", err.name, err.message);
+    process.exit(1);
+});
 dotenv_1.default.config({ path: `${__dirname}/../conf.env` });
 const DATABASE_URI = (0, utils_1.currentMode)("dev")
     ? process.env.DATABASE_DEV
@@ -20,7 +24,7 @@ const server = app_1.default.listen(port, () => {
     console.log(`App running on port ${port}...`);
 });
 process.on("unhandledRejection", (err) => {
-    console.log(err);
+    console.log("Unhandled Rejection! Shutting down...\n", err);
     server.close(() => {
         process.exit(1); // (second) in this way, the process will be terminated gracefully after other requests handled
     });
