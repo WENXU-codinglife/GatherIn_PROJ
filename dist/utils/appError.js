@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.NotFoundError = void 0;
 class AppError extends Error {
     constructor(message, statusCode) {
         super(message);
@@ -9,4 +10,8 @@ class AppError extends Error {
         Error.captureStackTrace(this, this.constructor); // taking care of error stack
     }
 }
+const NotFoundError = () => {
+    return new AppError(" No data found with the identifier!", 404);
+};
+exports.NotFoundError = NotFoundError;
 exports.default = AppError;

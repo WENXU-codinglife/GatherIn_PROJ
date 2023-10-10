@@ -11,4 +11,9 @@ class AppError extends Error {
     Error.captureStackTrace(this, this.constructor); // taking care of error stack
   }
 }
+
+export const NotFoundError = () => {
+  return new AppError(" No data found with the identifier!", 404);
+};
+
 export default AppError;

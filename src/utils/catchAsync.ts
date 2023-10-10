@@ -1,7 +1,10 @@
 import { Request, Response, NextFunction } from "express";
 
 interface IAsynceFunction {
-  (req: Request, res: Response, next: NextFunction): Promise<Response>;
+  (req: Request, res: Response, next: NextFunction): Promise<Response<
+    any,
+    Record<string, any>
+  > | void>;
 }
 
 const catchAsync = (fn: IAsynceFunction) => {
