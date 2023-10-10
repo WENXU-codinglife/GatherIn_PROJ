@@ -16,6 +16,16 @@ mongoose_1.default.connect(db).then((con) => {
     console.log("DB connection successful!");
 });
 const port = +process.env.PORT || 3000;
-app_1.default.listen(port, () => {
+const server = app_1.default.listen(port, () => {
     console.log(`App running on port ${port}...`);
 });
+process.on("unhandledRejection", (err) => {
+    console.log(err);
+    server.close(() => {
+        process.exit(1); // (second) in this way, the process will be terminated gracefully after other requests handled
+    });
+    // process.exit(1); // (first) 0 for success, 1 for uncalled exception. However, this is a brutal way to imediately shut down everything (ongoing requests, etc)
+});
+// each time that there is an unhandled rejection, the porcess will emit an object called unhandledRejection
+// so we can subcribe to it
+// this will handle all unhandled rejections
