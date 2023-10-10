@@ -5,6 +5,11 @@ const handleCastErrorDB = (err: mongoose.Error.CastError) => {
   const message = `Invalid ${err.path}: ${err.value}`;
   return new AppError(message, 400);
 };
+const handleValidationErrorDB = (err: mongoose.Error.ValidationError) => {
+  const errors = Object.values(err.errors).map((el) => el.message);
+  const message = `Invalid input data. ${errors.join(". ")}`;
+  return new AppError(message, 400);
+};
 const sendErrorDev = (err: AppError, res: Response) => {
   res.status(err.statusCode).json({
     status: err.status,
@@ -45,6 +50,9 @@ const errorHandler = (
     sendErrorDev(error, res);
   } else {
     if (err instanceof mongoose.Error.CastError) error = handleCastErrorDB(err);
+    if (err instanceof mongoose.Error.ValidationError)
+      error = handleValidationErrorDB(err);
+
     sendErrorProd(error, res);
   }
 };
