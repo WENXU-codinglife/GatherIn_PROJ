@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importDefault(require("mongoose"));
 const validator_1 = __importDefault(require("validator"));
+const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const userSchema = new mongoose_1.default.Schema({
     name: {
         type: String,
@@ -36,6 +37,13 @@ const userSchema = new mongoose_1.default.Schema({
     passwordConfirm: {
         type: String,
         required: [true, "A confirmed password is needed!"],
+        validate: {
+            // This only works on CREATE and SAVE!!!
+            validator: function (el) {
+                return el === this.password;
+            },
+            message: "password is not confirmed correctly!",
+        },
     },
 }
 //   {
@@ -43,5 +51,13 @@ const userSchema = new mongoose_1.default.Schema({
 //     toObject: { virtuals: true },
 //   }
 );
+userSchema.pre("save", async function (next) {
+    if (!this.isModified("password"))
+        return next(); // for updating without changing passward
+    // this.password = bcrypt.hash(this.password, 12); // sync version
+    this.password = await bcryptjs_1.default.hash(this.password, 12);
+    this.passwordConfirm = "undefined";
+    next();
+});
 const User_Model = mongoose_1.default.model("User", userSchema);
 exports.default = User_Model;

@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import validator from "validator";
+import bcrypt from "bcryptjs";
 
 interface IUser {
   name: string;
@@ -41,6 +42,13 @@ const userSchema = new mongoose.Schema<IUser>(
     passwordConfirm: {
       type: String,
       required: [true, "A confirmed password is needed!"],
+      validate: {
+        // This only works on CREATE and SAVE!!!
+        validator: function (this: IUser, el: string) {
+          return el === this.password;
+        },
+        message: "password is not confirmed correctly!",
+      },
     },
   }
   //   {
@@ -48,5 +56,16 @@ const userSchema = new mongoose.Schema<IUser>(
   //     toObject: { virtuals: true },
   //   }
 );
+userSchema.pre(
+  "save",
+  async function (next: mongoose.CallbackWithoutResultAndOptionalError) {
+    if (!this.isModified("password")) return next(); // for updating without changing passward
+    // this.password = bcrypt.hash(this.password, 12); // sync version
+    this.password = await bcrypt.hash(this.password, 12);
+    this.passwordConfirm = "undefined";
+    next();
+  }
+);
+
 const User_Model = mongoose.model("User", userSchema);
 export default User_Model;
