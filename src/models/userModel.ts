@@ -48,5 +48,5 @@ const userSchema = new mongoose.Schema<IUser>(
   //     toObject: { virtuals: true },
   //   }
 );
-const User = mongoose.model("User", userSchema);
-export default userSchema;
+const User_Model = mongoose.model("User", userSchema);
+export default User_Model;

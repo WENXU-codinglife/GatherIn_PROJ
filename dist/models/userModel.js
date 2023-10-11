@@ -43,5 +43,5 @@ const userSchema = new mongoose_1.default.Schema({
 //     toObject: { virtuals: true },
 //   }
 );
-const User = mongoose_1.default.model("User", userSchema);
-exports.default = userSchema;
+const User_Model = mongoose_1.default.model("User", userSchema);
+exports.default = User_Model;

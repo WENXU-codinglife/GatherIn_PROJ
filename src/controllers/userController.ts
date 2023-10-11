@@ -1,8 +1,14 @@
-import { RequestHandler } from "express";
+import { Request, Response, NextFunction, RequestHandler } from "express";
+import User_Model from "../models/userModel";
+import catchAsync from "../utils/catchAsync";
 
-export const getAllUsers: RequestHandler = (req, res, next) => {
-  res.status(500).json({
-    status: "error",
-    message: "This route hasn't been implemented!",
-  });
-};
+export const getAllUsers = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const allUsers = await User_Model.find();
+
+    res.status(200).json({
+      status: "success",
+      data: allUsers,
+    });
+  }
+);
