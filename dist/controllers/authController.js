@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.login = exports.signup = void 0;
+exports.protect = exports.login = exports.signup = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const appError_1 = __importDefault(require("../utils/appError"));
 const catchAsync_1 = __importDefault(require("../utils/catchAsync"));
@@ -44,4 +44,14 @@ exports.login = (0, catchAsync_1.default)(async (req, res, next) => {
         status: "success",
         token,
     });
+});
+exports.protect = (0, catchAsync_1.default)(async (req, res, next) => {
+    let token = "";
+    if (req.headers.authorization &&
+        req.headers.authorization.startsWith("Bearer")) {
+        token = req.headers.authorization.split(" ")[1];
+        if (!token)
+            return next(new appError_1.default("You are not logged in! Please log in to get access!", 401));
+    }
+    next();
 });

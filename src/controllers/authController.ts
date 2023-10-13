@@ -49,3 +49,23 @@ export const login = catchAsync(
     });
   }
 );
+
+export const protect = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    let token: string = "";
+    if (
+      req.headers.authorization &&
+      req.headers.authorization.startsWith("Bearer")
+    ) {
+      token = req.headers.authorization.split(" ")[1];
+      if (!token)
+        return next(
+          new AppError(
+            "You are not logged in! Please log in to get access!",
+            401
+          )
+        );
+    }
+    next();
+  }
+);

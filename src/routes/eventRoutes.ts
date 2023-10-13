@@ -1,4 +1,5 @@
 import express from "express";
+import { protect } from "../controllers/authController";
 import {
   getAllEvent,
   createEvent,
@@ -10,7 +11,7 @@ import {
 const router = express.Router();
 
 router.route("/event-stats").get(getEventStats);
-router.route("/").get(getAllEvent).post(createEvent);
+router.route("/").get(protect, getAllEvent).post(createEvent);
 router.route("/:id").get(getEvent).patch(updateEvent).delete(deleteEvent);
 
 export default router;
