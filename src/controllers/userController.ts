@@ -8,7 +8,8 @@ export const getAllUsers = catchAsync(
 
     res.status(200).json({
       status: "success",
-      data: allUsers,
+      result: allUsers.length,
+      data: { allUsers },
     });
   }
 );

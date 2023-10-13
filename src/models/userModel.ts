@@ -3,14 +3,21 @@ import validator from "validator";
 import bcrypt from "bcryptjs";
 
 interface IUser {
+  _id: mongoose.Schema.Types.ObjectId;
   name: string;
   email: string;
   photo: string;
   password: string;
   passwordConfirm: string;
 }
-
-const userSchema = new mongoose.Schema<IUser>(
+interface IUserMethods {
+  correctPassword(
+    candidatePassword: string,
+    userPassword: string
+  ): Promise<boolean>;
+}
+type UserModel = mongoose.Model<IUser, {}, IUserMethods>;
+const userSchema = new mongoose.Schema<IUser, UserModel, IUserMethods>(
   {
     name: {
       type: String,
@@ -38,9 +45,11 @@ const userSchema = new mongoose.Schema<IUser>(
       type: String,
       required: [true, "A password is needed!"],
       minLength: [8, "A password must have greater or equal than 8 characters"],
+      select: false,
     },
     passwordConfirm: {
       type: String,
+      select: false,
       required: [true, "A confirmed password is needed!"],
       validate: {
         // This only works on CREATE and SAVE!!!
@@ -56,6 +65,16 @@ const userSchema = new mongoose.Schema<IUser>(
   //     toObject: { virtuals: true },
   //   }
 );
+userSchema.method(
+  "correctPassword",
+  async function correctPassword(
+    candidatePassword: string,
+    userPassword: string
+  ) {
+    return await bcrypt.compare(candidatePassword, userPassword);
+  }
+);
+
 userSchema.pre(
   "save",
   async function (next: mongoose.CallbackWithoutResultAndOptionalError) {
@@ -67,5 +86,5 @@ userSchema.pre(
   }
 );
 
-const User_Model = mongoose.model("User", userSchema);
+const User_Model = mongoose.model<IUser, UserModel>("User", userSchema);
 export default User_Model;

@@ -10,6 +10,7 @@ exports.getAllUsers = (0, catchAsync_1.default)(async (req, res, next) => {
     const allUsers = await userModel_1.default.find();
     res.status(200).json({
         status: "success",
-        data: allUsers,
+        result: allUsers.length,
+        data: { allUsers },
     });
 });

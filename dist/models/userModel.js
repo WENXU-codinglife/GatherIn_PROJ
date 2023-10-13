@@ -33,9 +33,11 @@ const userSchema = new mongoose_1.default.Schema({
         type: String,
         required: [true, "A password is needed!"],
         minLength: [8, "A password must have greater or equal than 8 characters"],
+        select: false,
     },
     passwordConfirm: {
         type: String,
+        select: false,
         required: [true, "A confirmed password is needed!"],
         validate: {
             // This only works on CREATE and SAVE!!!
@@ -51,6 +53,9 @@ const userSchema = new mongoose_1.default.Schema({
 //     toObject: { virtuals: true },
 //   }
 );
+userSchema.method("correctPassword", async function correctPassword(candidatePassword, userPassword) {
+    return await bcryptjs_1.default.compare(candidatePassword, userPassword);
+});
 userSchema.pre("save", async function (next) {
     if (!this.isModified("password"))
         return next(); // for updating without changing passward
