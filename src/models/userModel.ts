@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import validator from "validator";
 import bcrypt from "bcryptjs";
 
-interface IUser {
+export interface IUser {
   _id: mongoose.Schema.Types.ObjectId;
   name: string;
   email: string;
@@ -12,7 +12,7 @@ interface IUser {
   passwordConfirm: string;
   passwordChangedAt: number;
 }
-interface IUserMethods {
+export interface IUserMethods {
   correctPassword(
     candidatePassword: string,
     userPassword: string

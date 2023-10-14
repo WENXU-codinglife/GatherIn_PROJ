@@ -4,11 +4,11 @@ import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
 import AppError from "../utils/appError";
 import catchAsync from "../utils/catchAsync";
-import User_Model from "./../models/userModel";
+import User_Model, { IUser, IUserMethods } from "./../models/userModel";
 
 interface IUserRequest extends Request {
   user:
-    | (mongoose.Document<unknown, {}, IUser> &
+    | mongoose.Document<unknown, {}, IUser> &
         Omit<
           IUser &
             Required<{
@@ -16,8 +16,7 @@ interface IUserRequest extends Request {
             }>,
           keyof IUserMethods
         > &
-        IUserMethods)
-    | null;
+        IUserMethods;
 }
 
 const signToken = (id: mongoose.Schema.Types.ObjectId) => {
