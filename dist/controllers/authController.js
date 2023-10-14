@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.protect = exports.login = exports.signup = void 0;
+exports.restrictTo = exports.protect = exports.login = exports.signup = void 0;
 const util_1 = require("util");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const appError_1 = __importDefault(require("../utils/appError"));
@@ -22,6 +22,7 @@ exports.signup = (0, catchAsync_1.default)(async (req, res, next) => {
         password: req.body.password,
         passwordConfirm: req.body.passwordConfirm,
         passwordChangedAt: Date.parse(req.body.passwordChangedAt) / 1000,
+        role: req.body.role,
     });
     const token = jsonwebtoken_1.default.sign({ id: newUser._id }, process.env.JWT_SECRET, {
         expiresIn: process.env.JWT_EXPIRES_IN,
@@ -69,3 +70,11 @@ exports.protect = (0, catchAsync_1.default)(async (req, res, next) => {
     }
     next();
 });
+const restrictTo = (...roles) => {
+    return (req, res, next) => {
+        if (!roles.includes(req.user.role))
+            return next(new appError_1.default("You do not have permission to perform this action!", 403));
+        next();
+    };
+};
+exports.restrictTo = restrictTo;

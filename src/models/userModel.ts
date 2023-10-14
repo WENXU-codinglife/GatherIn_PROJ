@@ -7,6 +7,7 @@ interface IUser {
   name: string;
   email: string;
   photo: string;
+  role: string;
   password: string;
   passwordConfirm: string;
   passwordChangedAt: number;
@@ -42,6 +43,11 @@ const userSchema = new mongoose.Schema<IUser, UserModel, IUserMethods>(
     photo: {
       type: String,
       trim: true,
+    },
+    role: {
+      type: String,
+      enum: ["user", "creator", "organizer", "admin"],
+      default: "user",
     },
     password: {
       type: String,

@@ -9,11 +9,11 @@ const authController_1 = require("../controllers/authController");
 const router = express_1.default.Router();
 router.post("/signup", authController_1.signup);
 router.get("/login", authController_1.login);
-router.route("/").get(userController_1.getAllUsers);
+router.route("/").get(authController_1.protect, userController_1.getAllUsers);
 // router.route("/api/v1/users").get(getAllUsers).post(createUser);
-// router
-//   .route("/api/v1/users/:id")
-//   .get(getUser)
-//   .patch(updateUser)
-//   .delete(deleteUser);
+router
+    .route("/:id")
+    //   .get(getUser)
+    //   .patch(updateUser)
+    .delete(authController_1.protect, (0, authController_1.restrictTo)("admin", "creator"), userController_1.deleteUser);
 exports.default = router;

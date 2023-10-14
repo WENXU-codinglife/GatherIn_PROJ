@@ -5,7 +5,20 @@ import jwt from "jsonwebtoken";
 import AppError from "../utils/appError";
 import catchAsync from "../utils/catchAsync";
 import User_Model from "./../models/userModel";
-import { decode } from "punycode";
+
+interface IUserRequest extends Request {
+  user:
+    | (mongoose.Document<unknown, {}, IUser> &
+        Omit<
+          IUser &
+            Required<{
+              _id: mongoose.Schema.Types.ObjectId;
+            }>,
+          keyof IUserMethods
+        > &
+        IUserMethods)
+    | null;
+}
 
 const signToken = (id: mongoose.Schema.Types.ObjectId) => {
   return jwt.sign({ id: id }, process.env.JWT_SECRET!, {
@@ -22,6 +35,7 @@ export const signup = catchAsync(
       password: req.body.password,
       passwordConfirm: req.body.passwordConfirm,
       passwordChangedAt: Date.parse(req.body.passwordChangedAt) / 1000,
+      role: req.body.role,
     });
 
     const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET!, {
@@ -83,7 +97,7 @@ export const protect = catchAsync(
           )
         );
       }
-      (req as any).user = currentUser; // I don't take this as a good practice
+      (req as IUserRequest).user = currentUser; // I don't take this as a good practice
     } else {
       return next(
         new AppError("You are not logged in! Please log in to get access!", 401)
@@ -92,3 +106,13 @@ export const protect = catchAsync(
     next();
   }
 );
+
+export const restrictTo = (...roles: string[]) => {
+  return (req: Request, res: Response, next: NextFunction) => {
+    if (!roles.includes((req as IUserRequest).user.role))
+      return next(
+        new AppError("You do not have permission to perform this action!", 403)
+      );
+    next();
+  };
+};
