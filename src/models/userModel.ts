@@ -9,12 +9,14 @@ interface IUser {
   photo: string;
   password: string;
   passwordConfirm: string;
+  passwordChangedAt: number;
 }
 interface IUserMethods {
   correctPassword(
     candidatePassword: string,
     userPassword: string
   ): Promise<boolean>;
+  changedPasswordAfter(JWTTimestamp: Date): boolean;
 }
 type UserModel = mongoose.Model<IUser, {}, IUserMethods>;
 const userSchema = new mongoose.Schema<IUser, UserModel, IUserMethods>(
@@ -59,6 +61,9 @@ const userSchema = new mongoose.Schema<IUser, UserModel, IUserMethods>(
         message: "password is not confirmed correctly!",
       },
     },
+    passwordChangedAt: {
+      type: Number,
+    },
   }
   //   {
   //     toJSON: { virtuals: true },
@@ -72,6 +77,14 @@ userSchema.method(
     userPassword: string
   ) {
     return await bcrypt.compare(candidatePassword, userPassword);
+  }
+);
+userSchema.method(
+  "changedPasswordAfter",
+  function changedPasswordAfter(JWTTimestamp: number) {
+    if (this.passwordChangedAt) {
+      return JWTTimestamp < this.passwordChangedAt;
+    }
   }
 );
 

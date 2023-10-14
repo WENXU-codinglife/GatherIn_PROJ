@@ -1,9 +1,11 @@
+import { promisify } from "util";
 import { Request, Response, NextFunction } from "express";
 import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
 import AppError from "../utils/appError";
 import catchAsync from "../utils/catchAsync";
 import User_Model from "./../models/userModel";
+import { decode } from "punycode";
 
 const signToken = (id: mongoose.Schema.Types.ObjectId) => {
   return jwt.sign({ id: id }, process.env.JWT_SECRET!, {
@@ -19,6 +21,7 @@ export const signup = catchAsync(
       email: req.body.email,
       password: req.body.password,
       passwordConfirm: req.body.passwordConfirm,
+      passwordChangedAt: Date.parse(req.body.passwordChangedAt) / 1000,
     });
 
     const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET!, {
@@ -65,6 +68,26 @@ export const protect = catchAsync(
             401
           )
         );
+      const promisifiedVerify = promisify<string, jwt.Secret>(jwt.verify);
+      const decoded = await promisifiedVerify(token, process.env.JWT_SECRET!);
+      const currentUser = await User_Model.findById((decoded as any).id);
+      if (!currentUser)
+        return next(
+          new AppError("The user belonging to this token do not exist", 401)
+        );
+      if (currentUser.changedPasswordAfter((decoded as any).iat)) {
+        return next(
+          new AppError(
+            "User recently changed password! Please log in again!",
+            401
+          )
+        );
+      }
+      (req as any).user = currentUser; // I don't take this as a good practice
+    } else {
+      return next(
+        new AppError("You are not logged in! Please log in to get access!", 401)
+      );
     }
     next();
   }

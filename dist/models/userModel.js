@@ -47,6 +47,9 @@ const userSchema = new mongoose_1.default.Schema({
             message: "password is not confirmed correctly!",
         },
     },
+    passwordChangedAt: {
+        type: Number,
+    },
 }
 //   {
 //     toJSON: { virtuals: true },
@@ -55,6 +58,11 @@ const userSchema = new mongoose_1.default.Schema({
 );
 userSchema.method("correctPassword", async function correctPassword(candidatePassword, userPassword) {
     return await bcryptjs_1.default.compare(candidatePassword, userPassword);
+});
+userSchema.method("changedPasswordAfter", function changedPasswordAfter(JWTTimestamp) {
+    if (this.passwordChangedAt) {
+        return JWTTimestamp < this.passwordChangedAt;
+    }
 });
 userSchema.pre("save", async function (next) {
     if (!this.isModified("password"))
