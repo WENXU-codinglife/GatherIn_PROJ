@@ -9,6 +9,8 @@ const authController_1 = require("../controllers/authController");
 const router = express_1.default.Router();
 router.post("/signup", authController_1.signup);
 router.get("/login", authController_1.login);
+router.post("/forgotPassword", authController_1.forgotPassword);
+// router.post('/resetPassword', );
 router.route("/").get(authController_1.protect, userController_1.getAllUsers);
 // router.route("/api/v1/users").get(getAllUsers).post(createUser);
 router

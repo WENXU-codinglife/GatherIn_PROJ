@@ -5,12 +5,15 @@ import {
   protect,
   signup,
   restrictTo,
+  forgotPassword,
 } from "../controllers/authController";
 
 const router = express.Router();
 
 router.post("/signup", signup);
 router.get("/login", login);
+router.post("/forgotPassword", forgotPassword);
+// router.post('/resetPassword', );
 router.route("/").get(protect, getAllUsers);
 // router.route("/api/v1/users").get(getAllUsers).post(createUser);
 router

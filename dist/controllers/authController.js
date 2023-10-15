@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.restrictTo = exports.protect = exports.login = exports.signup = void 0;
+exports.resetPassword = exports.forgotPassword = exports.restrictTo = exports.protect = exports.login = exports.signup = void 0;
 const util_1 = require("util");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const appError_1 = __importDefault(require("../utils/appError"));
@@ -78,3 +78,13 @@ const restrictTo = (...roles) => {
     };
 };
 exports.restrictTo = restrictTo;
+const forgotPassword = async (req, res, next) => {
+    const user = await userModel_1.default.findOne({ email: req.body.email });
+    if (!user)
+        return next(new appError_1.default("There is no user with email address!", 404));
+    const resetToken = user.createPasswordResetToken();
+    await user.save();
+};
+exports.forgotPassword = forgotPassword;
+const resetPassword = (req, res, next) => { };
+exports.resetPassword = resetPassword;

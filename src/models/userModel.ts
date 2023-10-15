@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import validator from "validator";
 import bcrypt from "bcryptjs";
+import crypto from "crypto";
 
 export interface IUser {
   _id: mongoose.Schema.Types.ObjectId;
@@ -11,6 +12,8 @@ export interface IUser {
   password: string;
   passwordConfirm: string;
   passwordChangedAt: number;
+  passwordResetToken: String;
+  passwordResetExpires: Date;
 }
 export interface IUserMethods {
   correctPassword(
@@ -18,6 +21,7 @@ export interface IUserMethods {
     userPassword: string
   ): Promise<boolean>;
   changedPasswordAfter(JWTTimestamp: Date): boolean;
+  createPasswordResetToken(): string;
 }
 type UserModel = mongoose.Model<IUser, {}, IUserMethods>;
 const userSchema = new mongoose.Schema<IUser, UserModel, IUserMethods>(
@@ -70,6 +74,8 @@ const userSchema = new mongoose.Schema<IUser, UserModel, IUserMethods>(
     passwordChangedAt: {
       type: Number,
     },
+    passwordResetToken: { type: String },
+    passwordResetExpires: { type: Date },
   }
   //   {
   //     toJSON: { virtuals: true },
@@ -91,6 +97,19 @@ userSchema.method(
     if (this.passwordChangedAt) {
       return JWTTimestamp < this.passwordChangedAt;
     }
+  }
+);
+userSchema.method(
+  "createPasswordResetToken",
+  function createPasswordResetToken() {
+    const resetToken = crypto.randomBytes(32).toString("hex");
+
+    this.passwordResetToken = crypto
+      .createHash("sha256")
+      .update(resetToken)
+      .digest("hex");
+    this.passwordResetExpires = new Date(Date.now() + 10 * 60 * 1000);
+    return resetToken;
   }
 );
 

@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importDefault(require("mongoose"));
 const validator_1 = __importDefault(require("validator"));
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
+const crypto_1 = __importDefault(require("crypto"));
 const userSchema = new mongoose_1.default.Schema({
     name: {
         type: String,
@@ -55,6 +56,8 @@ const userSchema = new mongoose_1.default.Schema({
     passwordChangedAt: {
         type: Number,
     },
+    passwordResetToken: { type: String },
+    passwordResetExpires: { type: Date },
 }
 //   {
 //     toJSON: { virtuals: true },
@@ -68,6 +71,15 @@ userSchema.method("changedPasswordAfter", function changedPasswordAfter(JWTTimes
     if (this.passwordChangedAt) {
         return JWTTimestamp < this.passwordChangedAt;
     }
+});
+userSchema.method("createPasswordResetToken", function createPasswordResetToken() {
+    const resetToken = crypto_1.default.randomBytes(32).toString("hex");
+    this.passwordResetToken = crypto_1.default
+        .createHash("sha256")
+        .update(resetToken)
+        .digest("hex");
+    this.passwordResetExpires = new Date(Date.now() + 10 * 60 * 1000);
+    return resetToken;
 });
 userSchema.pre("save", async function (next) {
     if (!this.isModified("password"))
