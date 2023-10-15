@@ -19,6 +19,7 @@
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.1.0",
     "mongoose": "^7.5.3",
+    "nodemailer": "^6.9.6",
     "validator": "^13.11.0"
   },
   "devDependencies": {
@@ -29,6 +30,7 @@
     "@types/mongoose": "^5.11.97",
     "@types/morgan": "^1.9.6",
     "@types/node": "^20.6.5",
+    "@types/nodemailer": "^6.4.11",
     "@types/validator": "^13.11.2",
     "morgan": "^1.10.0",
     "ndb": "^1.1.5",
