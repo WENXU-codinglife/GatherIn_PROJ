@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken";
 import AppError from "../utils/appError";
 import catchAsync from "../utils/catchAsync";
 import User_Model, { IUser, IUserMethods } from "./../models/userModel";
+import sendEmail from "../utils/email";
 
 interface IUserRequest extends Request {
   user:
@@ -126,6 +127,34 @@ export const forgotPassword = async (
     return next(new AppError("There is no user with email address!", 404));
   const resetToken = user.createPasswordResetToken();
   await user.save();
+
+  const resetURL = `${req.protocol}://${req.get(
+    "host"
+  )}/api/v1/users/resetPassword/${resetToken}`;
+
+  const message = `Forgot your password? Submit a PATCH request with your new password and passwordConfirm to: ${resetURL}.`;
+  try {
+    await sendEmail({
+      email: user.email,
+      subject: "Your password reset token (valid for 10 mins)",
+      message,
+    });
+
+    res.status(200).json({
+      status: "success",
+      message: "Token sent email",
+    });
+  } catch (err) {
+    user.passwordResetToken = undefined;
+    user.passwordResetExpires = undefined;
+    await user.save({ validateBeforeSave: false });
+    return next(
+      new AppError(
+        "There was an error sending the email. Try again later!",
+        500
+      )
+    );
+  }
 };
 
 export const resetPassword = (

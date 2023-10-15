@@ -12,8 +12,8 @@ export interface IUser {
   password: string;
   passwordConfirm: string;
   passwordChangedAt: number;
-  passwordResetToken: String;
-  passwordResetExpires: Date;
+  passwordResetToken: String | undefined;
+  passwordResetExpires: Date | undefined;
 }
 export interface IUserMethods {
   correctPassword(

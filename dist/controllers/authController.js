@@ -9,6 +9,7 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const appError_1 = __importDefault(require("../utils/appError"));
 const catchAsync_1 = __importDefault(require("../utils/catchAsync"));
 const userModel_1 = __importDefault(require("./../models/userModel"));
+const email_1 = __importDefault(require("../utils/email"));
 const signToken = (id) => {
     return jsonwebtoken_1.default.sign({ id: id }, process.env.JWT_SECRET, {
         expiresIn: process.env.JWT_EXPIRES_IN,
@@ -84,6 +85,25 @@ const forgotPassword = async (req, res, next) => {
         return next(new appError_1.default("There is no user with email address!", 404));
     const resetToken = user.createPasswordResetToken();
     await user.save();
+    const resetURL = `${req.protocol}://${req.get("host")}/api/v1/users/resetPassword/${resetToken}`;
+    const message = `Forgot your password? Submit a PATCH request with your new password and passwordConfirm to: ${resetURL}.`;
+    try {
+        await (0, email_1.default)({
+            email: user.email,
+            subject: "Your password reset token (valid for 10 mins)",
+            message,
+        });
+        res.status(200).json({
+            status: "success",
+            message: "Token sent email",
+        });
+    }
+    catch (err) {
+        user.passwordResetToken = undefined;
+        user.passwordResetExpires = undefined;
+        await user.save({ validateBeforeSave: false });
+        return next(new appError_1.default("There was an error sending the email. Try again later!", 500));
+    }
 };
 exports.forgotPassword = forgotPassword;
 const resetPassword = (req, res, next) => { };
